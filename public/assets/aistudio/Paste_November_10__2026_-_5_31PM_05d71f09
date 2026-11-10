@@ -1,0 +1,2190 @@
+
+ACT AS:
+A senior SaaS product architect, enterprise HRMS domain expert, UI/UX designer, full-stack developer, mobile application developer, PostgreSQL database architect, DevOps engineer, QA engineer, and security specialist.
+
+PROJECT NAME:
+Enterprise HRMS SaaS Platform
+
+PROJECT TYPE:
+End-to-End Human Resource Management System
+
+PRIMARY OBJECTIVE:
+Design and develop a complete, commercially deployable, multi-tenant HRMS SaaS platform that can be used by multiple companies.
+
+The system must cover the entire employee lifecycle, starting from recruitment and onboarding through attendance, leave, payroll, performance management, employee engagement, and exit management.
+
+This must be a REAL WORKING APPLICATION, not a UI prototype.
+
+Every form, button, filter, dashboard, table, report, API, user permission, notification, and business workflow must work correctly and be connected to a persistent database.
+
+Do not generate dummy dashboards that merely display hardcoded data.
+
+Use a modular, scalable architecture that supports future growth.
+
+==================================================
+1. PRODUCT VISION
+==================================================
+
+Build a commercial HRMS SaaS product suitable for:
+
+- Startups
+- Small businesses
+- Medium-sized companies
+- Large enterprises
+- IT companies
+- Digital marketing agencies
+- Manufacturing companies
+- Retail businesses
+- Educational institutions
+- Service organizations
+- Multi-branch organizations
+
+The platform must support:
+
+1. Multiple companies
+2. Multiple branches
+3. Multiple departments
+4. Multiple employee roles
+5. Multiple salary structures
+6. Multiple shifts and work policies
+7. Configurable country-specific compliance
+8. Monthly and yearly subscriptions
+9. Employee web portal
+10. Employee mobile app
+11. HR administration portal
+12. SaaS super admin dashboard
+13. Real-time notifications
+14. Reporting and analytics
+15. Role-based access control
+16. Third-party integrations
+17. White-label branding where enabled
+18. Modular feature enablement
+
+The platform must be configurable, not hardcoded for one company.
+
+==================================================
+2. RECOMMENDED TECHNOLOGY STACK
+==================================================
+
+FRONTEND:
+- React with Next.js and TypeScript
+- Tailwind CSS
+- shadcn/ui component library
+- Lucide icons
+- React Hook Form
+- Zod validation
+- TanStack Query
+- TanStack Table
+- Recharts for dashboards
+
+BACKEND:
+- NestJS with TypeScript
+- REST API
+- OpenAPI / Swagger documentation
+- Background workers using BullMQ
+- Redis for queue processing and caching
+
+DATABASE:
+- PostgreSQL
+- Prisma ORM
+- Versioned database migrations
+- Transaction-safe financial operations
+
+MOBILE APPLICATION:
+- React Native with Expo
+- Android and iOS support
+- Shared API backend
+- Secure mobile authentication
+- Push notifications
+- Device permissions only when required
+
+AUTHENTICATION:
+- Secure server-managed sessions or short-lived access tokens
+- Rotating refresh tokens where applicable
+- Multi-factor authentication
+- OAuth / SSO readiness
+- Role-based and attribute-based authorization
+
+FILE STORAGE:
+- S3-compatible private object storage
+- Signed download URLs
+- Encrypted sensitive documents
+
+DEPLOYMENT:
+- Docker
+- CI/CD pipelines
+- Managed PostgreSQL
+- Managed Redis
+- Cloud object storage
+- Reverse proxy and HTTPS
+- Centralized logs and monitoring
+
+PAYMENT INTEGRATION:
+- Payment gateway abstraction
+- Razorpay for supported Indian billing flows
+- Stripe for supported international flows
+- Webhook-based subscription synchronization
+
+Use current stable, compatible dependency versions.
+Do not mix incompatible frameworks.
+
+Create a monorepo with separate apps and shared packages.
+
+==================================================
+3. SAAS MULTI-TENANT ARCHITECTURE
+==================================================
+
+This is the most important architectural requirement.
+
+One software platform must securely serve multiple independent companies.
+
+Each client company is called a tenant.
+
+Example:
+
+Tenant A: ABC Technologies
+Tenant B: XYZ Solutions
+Tenant C: Global Enterprises
+
+Each tenant must have its own:
+
+- Company profile
+- Employees
+- Departments
+- Locations
+- HR settings
+- Attendance policies
+- Leave policies
+- Payroll configurations
+- Reports
+- Documents
+- Subscriptions
+- Branding
+- Managers and administrators
+
+STRICT TENANT ISOLATION:
+
+Company A must NEVER access Company B data.
+
+Implement:
+
+- Tenant-aware authentication
+- Tenant-aware backend authorization
+- tenant_id on tenant-owned database records
+- Database constraints
+- Tenant-scoped queries
+- PostgreSQL row-level security where appropriate
+- Tenant-scoped file storage
+- Tenant-scoped background jobs
+- Tenant-scoped report generation
+- Tenant-scoped caching
+- Tenant-aware audit logging
+
+Never trust a tenant_id sent by the frontend.
+
+Resolve tenant context using authenticated membership and authorized tenant selection.
+
+Use defense in depth to prevent cross-tenant access.
+
+For sensitive features, verify permissions on every backend request.
+
+Support future enterprise dedicated deployments without redesigning the whole application.
+
+==================================================
+4. USER ROLES AND PERMISSIONS
+==================================================
+
+Create these primary roles:
+
+PLATFORM SUPER ADMIN:
+Owns and manages the overall SaaS application.
+
+PLATFORM SUPPORT ADMIN:
+Handles authorized platform support activities without unrestricted access to client payroll or employee records.
+
+COMPANY OWNER / ADMIN:
+Manages their company's account and HRMS settings.
+
+HR ADMIN:
+Manages employees, recruitment, leave, HR operations, and policies.
+
+HR EXECUTIVE:
+Performs assigned HR workflows.
+
+PAYROLL ADMIN:
+Manages salary structures, payroll, payslips, and statutory settings.
+
+FINANCE MANAGER:
+Reviews approved payroll, expenses, payments, and financial reports.
+
+DEPARTMENT MANAGER:
+Manages team members, approvals, and performance.
+
+TEAM LEADER:
+Manages assigned team members and permissions.
+
+EMPLOYEE:
+Uses the employee self-service portal.
+
+RECRUITER:
+Accesses recruitment and applicant tracking functionality.
+
+AUDITOR:
+Read-only access to specifically authorized audit information.
+
+CUSTOM ROLE:
+Company administrators can create custom roles based on their plan.
+
+PERMISSION ENGINE:
+
+Permissions should be granular.
+
+Examples:
+
+employee.create
+employee.read
+employee.update
+employee.archive
+
+attendance.read.self
+attendance.read.team
+attendance.read.all
+attendance.approve
+
+leave.request
+leave.approve.team
+leave.manage
+
+payroll.view.self
+payroll.manage
+payroll.approve
+payroll.publish
+
+reports.export
+settings.manage
+roles.manage
+
+Enforce permissions on the backend.
+
+Support field-level security for salary, bank, tax, and identity information.
+
+Log permission changes.
+
+==================================================
+5. GLOBAL SUPER ADMIN PANEL
+==================================================
+
+Create a dedicated SaaS Super Admin application.
+
+DASHBOARD:
+
+Show:
+
+- Total registered companies
+- Active companies
+- Trial companies
+- Expired subscriptions
+- Suspended companies
+- Active subscriptions
+- Monthly recurring revenue
+- Annual recurring revenue
+- Total subscription revenue
+- Upcoming renewals
+- Failed payments
+- New registrations
+- Platform usage
+- Support ticket overview
+- System health
+
+COMPANY MANAGEMENT:
+
+- View all companies
+- Add company
+- Edit company
+- Activate company
+- Suspend company
+- Deactivate company
+- Company onboarding status
+- Subscription assignment
+- Employee limits
+- Branch limits
+- Enabled modules
+- Company branding
+- Billing history
+- Company owner contact
+- Usage metrics
+
+SUBSCRIPTION MANAGEMENT:
+
+- Create plans
+- Edit plans
+- Activate/deactivate plans
+- Monthly pricing
+- Annual pricing
+- Free trial duration
+- Employee limits
+- Storage limits
+- Module entitlements
+- Add-on features
+- Upgrade/downgrade rules
+- Proration rules
+- Cancellation rules
+- Invoice generation
+- Payment webhook monitoring
+
+PLATFORM SETTINGS:
+
+- Global configuration
+- Feature flags
+- Email templates
+- Notification templates
+- SMS provider configuration
+- Payment gateway configuration
+- Platform audit logs
+- Support administration
+- Maintenance status
+
+The SaaS Super Admin must not automatically have unrestricted access to tenant-sensitive data.
+
+Provide strictly controlled, approved, time-limited support access with complete audit logs.
+
+==================================================
+6. COMPANY REGISTRATION AND ONBOARDING
+==================================================
+
+Create public SaaS pages:
+
+- Homepage
+- Features
+- Solutions
+- Pricing
+- About Us
+- Contact
+- Book a Demo
+- Start Free Trial
+- Login
+- Register
+- Help Center
+- Privacy Policy
+- Terms of Service
+- Security Information
+
+COMPANY REGISTRATION FORM:
+
+Fields:
+
+- Company name
+- Company email
+- Contact person
+- Contact phone
+- Country
+- State
+- City
+- Business type
+- Organization size
+- Preferred plan
+- Company logo
+- Timezone
+- Default currency
+
+WORKFLOW:
+
+1. Company registers.
+2. Email verification occurs.
+3. Company owner account is created.
+4. Tenant organization is provisioned.
+5. Selected plan entitlements are assigned.
+6. Company onboarding wizard opens.
+7. Company sets up departments and branches.
+8. Company configures HR policies.
+9. Company adds or imports employees.
+10. Dashboard becomes available.
+
+Prevent duplicate submissions and partial tenant provisioning.
+
+Provisioning must be transactional or safely recoverable.
+
+==================================================
+7. COMPANY ADMIN DASHBOARD
+==================================================
+
+Design an attractive enterprise dashboard.
+
+TOP KPI CARDS:
+
+- Total employees
+- Active employees
+- Employees on leave
+- Present today
+- Absent today
+- Late arrivals
+- Open positions
+- Pending approvals
+- New joiners
+- Upcoming birthdays
+- Upcoming work anniversaries
+- Payroll status
+- Pending attendance corrections
+- Department count
+
+CHARTS:
+
+- Employee growth
+- Department distribution
+- Attendance trends
+- Leave trends
+- Headcount changes
+- Recruitment pipeline
+- Payroll cost trends
+- Attrition analytics
+- Gender distribution where lawfully collected
+- Employee status distribution
+
+OTHER SECTIONS:
+
+- Quick actions
+- Company announcements
+- Recent activities
+- Pending approval requests
+- Employee directory preview
+- Upcoming events
+- HR alerts
+
+All data must come from the connected backend.
+
+Dashboards must respect employee permissions and company boundaries.
+
+==================================================
+8. EMPLOYEE MANAGEMENT MODULE
+==================================================
+
+Create a complete Employee Information System.
+
+EMPLOYEE DIRECTORY:
+
+- Employee photo
+- Employee ID
+- Full name
+- Department
+- Designation
+- Reporting manager
+- Work location
+- Employment type
+- Joining date
+- Employment status
+- Contact information according to permissions
+
+EMPLOYEE PROFILE:
+
+PERSONAL DETAILS:
+- First name
+- Middle name
+- Last name
+- Preferred name
+- Date of birth
+- Gender where applicable and lawful
+- Phone number
+- Email
+- Address
+- Emergency contacts
+
+EMPLOYMENT DETAILS:
+- Employee number
+- Joining date
+- Confirmation date
+- Employee type
+- Job title
+- Department
+- Reporting manager
+- Work mode
+- Work location
+- Probation period
+- Employee status
+
+BANK AND PAYROLL DETAILS:
+- Bank details
+- Salary structure
+- Tax identifiers
+- Statutory identifiers
+- Payment information
+
+DOCUMENTS:
+- Offer letter
+- Appointment letter
+- Employment agreement
+- Identity documents
+- Experience certificates
+- Educational documents
+- Certifications
+- Other approved attachments
+
+ADDITIONAL FEATURES:
+
+- Employee create/edit
+- Employee archive
+- Bulk CSV/Excel import
+- Bulk export with authorization
+- Employee history
+- Department transfers
+- Promotion tracking
+- Employee rejoining
+- Duplicate employee detection
+- Digital employee timeline
+- Document expiry reminders
+- Custom fields
+
+Sensitive information must be encrypted or otherwise protected appropriately.
+
+Do not expose bank details or tax information to unauthorized roles.
+
+==================================================
+9. ORGANIZATION STRUCTURE MODULE
+==================================================
+
+Create management screens for:
+
+- Companies
+- Branches
+- Departments
+- Designations
+- Teams
+- Reporting hierarchy
+- Cost centers
+- Business units
+- Office locations
+- Employment categories
+
+Provide a visual organization chart.
+
+Support manager reassignment and organizational changes with history tracking.
+
+Do not allow invalid reporting cycles.
+
+==================================================
+10. ATTENDANCE MANAGEMENT MODULE
+==================================================
+
+Build a complete attendance system.
+
+FEATURES:
+
+- Employee check-in
+- Employee check-out
+- Daily attendance
+- Monthly attendance
+- Attendance calendar
+- Late arrival tracking
+- Early departure
+- Overtime tracking
+- Break tracking
+- Half-day calculation
+- Work-from-home attendance
+- Missed punch requests
+- Attendance correction requests
+- Attendance approval workflow
+- Shift-based attendance
+- Holiday handling
+- Weekly off configuration
+- Attendance regularization
+
+ATTENDANCE METHODS:
+
+- Web attendance
+- Mobile attendance
+- Authorized biometric integration
+- QR attendance where enabled
+- Location-based attendance where justified
+- Admin/manual corrections with audit trail
+
+LOCATION ATTENDANCE:
+
+Support configured office geofencing.
+
+Request employee location permission transparently.
+
+Do not continuously track employees in the background by default.
+
+Record the minimum necessary location information.
+
+Provide configurable alternatives.
+
+ATTENDANCE LOGIC:
+
+Use timezone-aware timestamps.
+
+Handle:
+
+- Overnight shifts
+- Different timezones
+- Grace periods
+- Daylight saving time
+- Multiple punches
+- Missed punches
+- Holidays
+- Leave days
+- Overtime eligibility
+
+All attendance rules must be configurable per tenant.
+
+==================================================
+11. SHIFT AND ROSTER MANAGEMENT
+==================================================
+
+Create:
+
+- Shift templates
+- Morning shift
+- General shift
+- Evening shift
+- Night shift
+- Rotational shifts
+- Flexible work hours
+- Split shifts
+- Weekly rosters
+- Employee shift assignment
+- Bulk shift scheduling
+- Shift swap requests
+- Manager approvals
+- Shift calendar
+- Shift conflict detection
+
+Support location-specific and employee-category policies.
+
+==================================================
+12. LEAVE MANAGEMENT MODULE
+==================================================
+
+Build comprehensive leave management.
+
+CONFIGURABLE LEAVE TYPES:
+
+- Casual leave
+- Sick leave
+- Earned leave
+- Privilege leave
+- Maternity leave
+- Paternity leave
+- Compensatory off
+- Unpaid leave
+- Optional holidays
+- Custom leave types
+
+FEATURES:
+
+- Apply for leave
+- Leave calendar
+- Leave balance
+- Leave history
+- Half-day leave
+- Multi-day leave
+- Attachments
+- Leave cancellation
+- Leave approval/rejection
+- Multiple approval levels
+- Leave encashment where applicable
+- Leave carry-forward
+- Accrual calculations
+- Leave expiry
+- Team leave calendar
+
+WORKFLOW:
+
+Employee applies for leave.
+
+Relevant manager receives a notification.
+
+Manager approves or rejects.
+
+HR receives updates if required.
+
+Leave balance adjusts according to configured policies.
+
+Employee receives a notification.
+
+Attendance and payroll use approved leave information.
+
+Prevent double deduction, overlapping leaves, and race conditions.
+
+==================================================
+13. HOLIDAY CALENDAR MANAGEMENT
+==================================================
+
+Create:
+
+- Country holidays
+- State holidays
+- Company holidays
+- Branch-specific holidays
+- Optional holidays
+- Floating holidays
+- Holiday calendars
+- Yearly calendar configuration
+
+Company administrators can manage applicable holidays.
+
+Employee views must reflect assigned calendars.
+
+==================================================
+14. PAYROLL MANAGEMENT MODULE
+==================================================
+
+Build a complete payroll system with configurable rules.
+
+PAYROLL DASHBOARD:
+
+- Total payroll amount
+- Employees in payroll
+- Current payroll cycle
+- Payroll processing status
+- Salary cost breakdown
+- Pending approvals
+- Payroll exceptions
+- Published payslips
+
+SALARY COMPONENTS:
+
+- Basic salary
+- House Rent Allowance
+- Special allowance
+- Conveyance allowance
+- Bonus
+- Incentives
+- Overtime pay
+- Reimbursements
+- Arrears
+- Custom earnings
+- Custom deductions
+
+PAYROLL FUNCTIONALITY:
+
+- Salary structures
+- CTC management
+- Salary revisions
+- Effective-dated compensation
+- Monthly payroll
+- Off-cycle payroll
+- Payroll previews
+- Attendance-linked payroll
+- Leave-without-pay calculations
+- Variable compensation
+- Loans and advances
+- Payroll adjustments
+- Retroactive adjustments
+- Salary holds
+- Full-and-final settlement
+- Payslip generation
+- Payroll approval
+- Payroll locking
+- Payroll publishing
+- Bank transfer export
+- Payroll reports
+
+INDIA-SPECIFIC CONFIGURABLE SUPPORT:
+
+- EPF / PF
+- ESI
+- Professional Tax
+- TDS
+- Applicable labor and payroll rules
+- Tax regime settings
+- Country/state-specific statutory configuration
+- Statutory reports where supported
+
+CRITICAL COMPLIANCE RULE:
+
+Do not hardcode statutory rates, salary thresholds, contribution limits, or tax slabs as permanently valid constants.
+
+Use effective-dated, configurable rules.
+
+Require verified legal and payroll review before enabling production statutory calculations.
+
+Show rule version and calculation explanations.
+
+PAYROLL WORKFLOW:
+
+1. Payroll admin selects month.
+2. System collects approved attendance.
+3. System collects approved leave.
+4. System loads effective salary structures.
+5. System calculates earnings.
+6. System applies configured deductions.
+7. System generates payroll preview.
+8. Payroll admin reviews exceptions.
+9. Authorized approver approves payroll.
+10. System locks the approved cycle.
+11. Payslips are published.
+12. Employees receive notifications.
+13. Payroll exports become available.
+
+Payroll must support immutable audit history and controlled corrections.
+
+Use precise decimal arithmetic.
+
+Never use floating-point arithmetic for money.
+
+==================================================
+15. EMPLOYEE SELF-SERVICE PORTAL
+==================================================
+
+Build a dedicated employee dashboard.
+
+EMPLOYEE DASHBOARD:
+
+- Welcome message
+- Attendance today
+- Monthly attendance
+- Leave balance
+- Upcoming holidays
+- Pending requests
+- Latest payslip
+- Notifications
+- Company announcements
+- Assigned tasks
+- Upcoming training
+- Performance goals
+
+EMPLOYEE ACTIONS:
+
+- View profile
+- Update permitted personal details
+- Check in/out
+- Apply for leave
+- Cancel leave
+- Request attendance correction
+- Request work from home
+- Download payslips
+- Download approved HR documents
+- Submit reimbursement
+- View organizational hierarchy
+- View holiday calendar
+- Raise HR helpdesk ticket
+- Submit resignation
+- Track requests
+
+Employees must only access authorized personal data.
+
+==================================================
+16. RECRUITMENT / APPLICANT TRACKING SYSTEM
+==================================================
+
+Create a complete recruitment module.
+
+FEATURES:
+
+- Job requisitions
+- Job approval workflow
+- Job openings
+- Job descriptions
+- Job posting management
+- Career page integration
+- Applicant registration
+- Resume upload
+- Candidate database
+- Resume search
+- Interview scheduling
+- Interview feedback
+- Candidate status tracking
+- Offer approval
+- Offer letter generation
+- Candidate communication
+- Hiring reports
+
+RECRUITMENT PIPELINE:
+
+Applied
+→ Screening
+→ Shortlisted
+→ Interview
+→ Assessment
+→ HR Round
+→ Selected
+→ Offer Sent
+→ Offer Accepted
+→ Hired
+
+Allow configuration of pipeline stages.
+
+Support rejection, withdrawal, and duplicate application handling.
+
+Use privacy-conscious candidate data retention policies.
+
+==================================================
+17. EMPLOYEE ONBOARDING MODULE
+==================================================
+
+Create digital onboarding workflows.
+
+FEATURES:
+
+- New joiner checklist
+- Joining forms
+- Document uploads
+- Policy acknowledgments
+- Offer acceptance
+- Employee information collection
+- HR verification
+- IT asset requests
+- Email account request
+- Department assignment
+- Manager assignment
+- Probation setup
+- Welcome notifications
+- Orientation scheduling
+
+Onboarding status:
+
+Not Started
+In Progress
+Pending Verification
+Completed
+
+Once onboarding is approved, create the active employee record using an idempotent workflow.
+
+==================================================
+18. PERFORMANCE MANAGEMENT MODULE
+==================================================
+
+Build employee performance management.
+
+FEATURES:
+
+- Goal management
+- KPI management
+- OKR management
+- Performance cycles
+- Employee self-review
+- Manager review
+- Peer feedback
+- 360-degree feedback
+- Competency assessments
+- Rating templates
+- Performance improvement plans
+- Appraisal recommendations
+- Promotion recommendations
+- Performance reports
+
+WORKFLOW:
+
+HR creates performance cycle.
+
+Manager assigns goals.
+
+Employee updates progress.
+
+Employee completes self-review.
+
+Manager evaluates.
+
+Authorized HR finalizes the review.
+
+Employee receives the finalized result.
+
+Only appropriate roles should access confidential evaluations.
+
+==================================================
+19. PROJECT AND TIMESHEET MANAGEMENT
+==================================================
+
+Create optional modules for service businesses.
+
+FEATURES:
+
+- Project creation
+- Project assignment
+- Task management
+- Task status
+- Employee time logs
+- Billable hours
+- Non-billable hours
+- Timesheet submission
+- Weekly timesheet
+- Project timesheet
+- Manager approvals
+- Project reports
+- Resource utilization
+- Project cost reporting
+
+Separate timesheet tracking from statutory attendance records.
+
+Provide proper authorization for project information.
+
+==================================================
+20. EXPENSE AND REIMBURSEMENT MANAGEMENT
+==================================================
+
+Create:
+
+- Expense categories
+- Expense submission
+- Receipt uploads
+- Travel expense claims
+- Internet reimbursement
+- Meal reimbursement
+- Fuel reimbursement
+- Custom reimbursement policies
+- Manager approval
+- Finance approval
+- Payment status
+- Expense reports
+
+Include:
+
+Submitted
+Under Review
+Approved
+Rejected
+Paid
+
+Handle duplicate submissions and approval history.
+
+==================================================
+21. EMPLOYEE LOAN AND ADVANCE MANAGEMENT
+==================================================
+
+Create:
+
+- Salary advance requests
+- Employee loan requests
+- Loan approval
+- Loan balance
+- Repayment schedule
+- Installment deductions
+- Loan statements
+- Settlement on exit
+
+Connect approved deductions to payroll.
+
+==================================================
+22. ASSET MANAGEMENT MODULE
+==================================================
+
+Track company assets.
+
+FIELDS:
+
+- Asset ID
+- Asset name
+- Category
+- Serial number
+- Purchase date
+- Asset cost
+- Warranty expiry
+- Assigned employee
+- Assignment date
+- Asset condition
+- Return date
+
+FEATURES:
+
+- Asset inventory
+- Asset assignment
+- Asset return
+- Asset transfer
+- Asset damage reports
+- Maintenance tracking
+- Warranty reminders
+- Employee asset history
+- Exit clearance integration
+
+==================================================
+23. TRAINING AND DEVELOPMENT MODULE
+==================================================
+
+Create:
+
+- Training programs
+- Training categories
+- Training schedules
+- Employee enrollment
+- Mandatory courses
+- Training materials
+- Completion tracking
+- Assessments
+- Certificates
+- Skills matrix
+- Learning reports
+
+Support future integration with a dedicated LMS.
+
+==================================================
+24. HR HELPDESK MODULE
+==================================================
+
+Employees should be able to raise HR support requests.
+
+FEATURES:
+
+- Ticket creation
+- Ticket categories
+- Ticket priority
+- Ticket assignment
+- Internal comments
+- Employee-visible comments
+- Attachments
+- Ticket status
+- SLA settings
+- Resolution tracking
+- Employee feedback
+
+Example categories:
+
+- Salary
+- Attendance
+- Leave
+- Documents
+- Benefits
+- IT support
+- HR policies
+- General enquiries
+
+==================================================
+25. EMPLOYEE ENGAGEMENT MODULE
+==================================================
+
+Create:
+
+- Announcements
+- Company news
+- Employee polls
+- Feedback surveys
+- Recognition and rewards
+- Birthday reminders
+- Work anniversaries
+- Employee appreciation
+- Employee events
+- Anonymous surveys where supported
+
+Do not reveal identities in genuinely anonymous survey workflows.
+
+==================================================
+26. DOCUMENT MANAGEMENT MODULE
+==================================================
+
+Create a secure HR document management system.
+
+DOCUMENT TYPES:
+
+- Offer letters
+- Appointment letters
+- Salary revision letters
+- Experience letters
+- Relieving letters
+- HR policies
+- Payslips
+- Employment contracts
+- Certificates
+- Other employee documents
+
+FUNCTIONALITY:
+
+- Document templates
+- Variable placeholders
+- PDF generation
+- Private uploads
+- Document previews
+- Authorized downloads
+- Version history
+- Expiry tracking
+- Access restrictions
+- Audit logs
+- Digital signature integration readiness
+
+Store documents privately.
+
+Do not expose public object storage links.
+
+==================================================
+27. RESIGNATION AND EXIT MANAGEMENT
+==================================================
+
+Create complete offboarding workflows.
+
+FEATURES:
+
+- Resignation request
+- Resignation approval
+- Notice period management
+- Last working day calculation
+- Exit interview
+- Asset return
+- Department clearance
+- IT clearance
+- Finance clearance
+- Payroll settlement
+- Leave encashment where applicable
+- Relieving letter
+- Experience letter
+- Employee account deactivation
+- Historical employee records
+
+WORKFLOW:
+
+Employee submits resignation.
+
+Manager reviews.
+
+HR confirms notice period.
+
+Departments complete clearance.
+
+Finance performs approved settlement.
+
+HR publishes authorized documents.
+
+Employee transitions to inactive status.
+
+Preserve records according to applicable retention policies.
+
+==================================================
+28. MANAGER PORTAL
+==================================================
+
+Create a manager-specific dashboard.
+
+FEATURES:
+
+- My team
+- Team attendance
+- Team leave calendar
+- Pending approvals
+- Employee performance
+- Timesheet approvals
+- Expense approvals
+- Shift approvals
+- Team announcements
+- Team reports
+- Upcoming employee events
+
+Managers must only see assigned or explicitly authorized employees.
+
+==================================================
+29. WORKFLOW AND APPROVAL ENGINE
+==================================================
+
+Build a configurable approval engine.
+
+SUPPORT:
+
+- Single-level approvals
+- Multi-level approvals
+- Sequential approvals
+- Parallel approvals
+- Conditional approvals
+- Delegated approvals
+- Escalations
+- Approval reminders
+- Rejection comments
+- Approval history
+
+Apply the workflow engine to:
+
+- Leave
+- Attendance corrections
+- Expenses
+- Salary changes
+- Payroll
+- Recruitment
+- Resignation
+- Shift swaps
+- Custom requests
+
+Use explicit workflow states.
+
+Prevent unauthorized transitions.
+
+Maintain complete audit history.
+
+==================================================
+30. NOTIFICATION SYSTEM
+==================================================
+
+Support:
+
+- In-app notifications
+- Email
+- Mobile push notifications
+- SMS integrations where enabled
+- Optional business messaging integrations
+
+TRIGGERS:
+
+- Leave submitted
+- Leave approved/rejected
+- Attendance correction
+- Missing check-out
+- Payroll published
+- Payslip available
+- New employee joined
+- Interview scheduled
+- Birthday reminder
+- Policy announcement
+- Performance review due
+- Ticket update
+- Subscription renewal
+- Failed payment
+
+Allow notification preferences.
+
+Respect privacy and opt-in requirements.
+
+Use background workers and retry policies.
+
+==================================================
+31. REPORTING AND ANALYTICS
+==================================================
+
+Create comprehensive reporting.
+
+REPORT CATEGORIES:
+
+EMPLOYEE REPORTS:
+- Employee list
+- Department-wise headcount
+- New joiners
+- Exits
+- Employee growth
+
+ATTENDANCE REPORTS:
+- Daily attendance
+- Monthly attendance
+- Late arrivals
+- Absences
+- Overtime
+
+LEAVE REPORTS:
+- Leave balance
+- Leave usage
+- Leave trends
+- Pending requests
+
+PAYROLL REPORTS:
+- Payroll register
+- Salary components
+- Deduction summaries
+- Payroll variance
+- Department payroll cost
+
+RECRUITMENT REPORTS:
+- Open positions
+- Hiring pipeline
+- Time-to-hire
+- Hiring source performance
+
+PERFORMANCE REPORTS:
+- Goal completion
+- Appraisal status
+- Performance distribution
+
+SAAS REPORTS:
+- Subscription revenue
+- Trial conversion
+- Active tenants
+- Churn
+- Plan distribution
+
+EXPORT FORMATS:
+
+- CSV
+- Excel
+- PDF
+
+All reports must use actual database records.
+
+Filters must work.
+
+Exports must enforce the same permissions as the corresponding screen.
+
+==================================================
+32. DATABASE ARCHITECTURE
+==================================================
+
+Design a normalized PostgreSQL schema.
+
+CORE PLATFORM TABLES:
+
+- users
+- tenants
+- tenant_memberships
+- roles
+- permissions
+- role_permissions
+- subscriptions
+- subscription_plans
+- subscription_invoices
+- payment_transactions
+- feature_entitlements
+- platform_audit_logs
+
+ORGANIZATION TABLES:
+
+- companies
+- branches
+- departments
+- designations
+- teams
+- cost_centers
+- work_locations
+
+EMPLOYEE TABLES:
+
+- employees
+- employee_employment_history
+- employee_contacts
+- employee_documents
+- employee_bank_details
+- employee_compensation_history
+- employee_reporting_history
+
+ATTENDANCE TABLES:
+
+- attendance_records
+- attendance_punches
+- shifts
+- shift_assignments
+- attendance_policies
+- attendance_regularizations
+
+LEAVE TABLES:
+
+- leave_types
+- leave_policies
+- leave_balances
+- leave_requests
+- leave_transactions
+- holiday_calendars
+- holidays
+
+PAYROLL TABLES:
+
+- salary_structures
+- salary_components
+- employee_salary_assignments
+- payroll_periods
+- payroll_runs
+- payroll_items
+- payroll_adjustments
+- payroll_approvals
+- payslips
+- statutory_rule_versions
+
+RECRUITMENT TABLES:
+
+- job_requisitions
+- job_postings
+- candidates
+- applications
+- interviews
+- interview_feedback
+- offers
+- onboarding_tasks
+
+OTHER TABLES:
+
+- performance_cycles
+- performance_goals
+- performance_reviews
+- projects
+- tasks
+- timesheets
+- expenses
+- employee_loans
+- assets
+- asset_assignments
+- training_courses
+- training_enrollments
+- helpdesk_tickets
+- announcements
+- employee_resignations
+- approval_workflows
+- approval_requests
+- notifications
+- audit_logs
+- integration_connections
+- files
+
+Include:
+
+- UUID primary keys
+- Tenant ownership
+- Foreign keys
+- Unique constraints
+- Appropriate indexes
+- Created timestamps
+- Updated timestamps
+- Effective dates where necessary
+- Controlled archival rules
+- Audit metadata
+
+Avoid storing sensitive payroll information in generic JSON columns without clear access restrictions.
+
+Generate real migrations and seed scripts.
+
+==================================================
+33. API ARCHITECTURE
+==================================================
+
+Create documented REST APIs.
+
+Example endpoints:
+
+AUTH:
+POST /api/v1/auth/login
+POST /api/v1/auth/logout
+POST /api/v1/auth/refresh
+POST /api/v1/auth/forgot-password
+
+COMPANIES:
+GET /api/v1/companies
+POST /api/v1/companies
+GET /api/v1/companies/:id
+PATCH /api/v1/companies/:id
+
+EMPLOYEES:
+GET /api/v1/employees
+POST /api/v1/employees
+GET /api/v1/employees/:id
+PATCH /api/v1/employees/:id
+
+ATTENDANCE:
+POST /api/v1/attendance/check-in
+POST /api/v1/attendance/check-out
+GET /api/v1/attendance/me
+GET /api/v1/attendance/team
+
+LEAVE:
+GET /api/v1/leaves
+POST /api/v1/leaves
+POST /api/v1/leaves/:id/approve
+POST /api/v1/leaves/:id/reject
+
+PAYROLL:
+POST /api/v1/payroll/runs
+POST /api/v1/payroll/runs/:id/calculate
+POST /api/v1/payroll/runs/:id/approve
+POST /api/v1/payroll/runs/:id/publish
+
+REPORTS:
+GET /api/v1/reports/attendance
+GET /api/v1/reports/leave
+GET /api/v1/reports/payroll
+
+Add APIs for every implemented module.
+
+REQUIREMENTS:
+
+- Authentication
+- Authorization
+- Tenant isolation
+- Input validation
+- Pagination
+- Filtering
+- Sorting
+- Structured errors
+- Rate limits
+- OpenAPI documentation
+- Idempotency for sensitive mutations
+- API versioning
+
+==================================================
+34. MOBILE APPLICATION
+==================================================
+
+Build a React Native mobile app.
+
+Create these screens:
+
+1. Splash screen
+2. Company identification
+3. Login
+4. Forgot password
+5. Employee dashboard
+6. Attendance check-in/out
+7. Attendance history
+8. Leave application
+9. Leave balance
+10. Holiday calendar
+11. Payslips
+12. Employee profile
+13. Employee documents
+14. Announcements
+15. Notifications
+16. Expense claims
+17. Manager approvals
+18. Team attendance
+19. Helpdesk
+20. Settings
+
+MOBILE DESIGN:
+
+- Native navigation
+- Bottom navigation
+- Clear touch targets
+- Responsive layouts
+- Loading indicators
+- Empty states
+- Error states
+- Secure credential handling
+- Push notifications
+- Accessible components
+
+Support Android and iOS.
+
+For offline behavior, cache only permitted information securely.
+
+Do not allow unsafe offline payroll or approval mutations.
+
+==================================================
+35. UI/UX DESIGN SYSTEM
+==================================================
+
+Create a clean, premium, enterprise SaaS design.
+
+Suggested colors:
+
+Primary Navy: #14213D
+Royal Blue: #2563EB
+Light Background: #F8FAFC
+White: #FFFFFF
+Dark Text: #0F172A
+Secondary Text: #64748B
+Success: #16A34A
+Warning: #F59E0B
+Error: #DC2626
+
+Use modern typography and consistent spacing.
+
+DESKTOP SIDEBAR:
+
+- Dashboard
+- Employees
+- Organization
+- Attendance
+- Shifts
+- Leave
+- Holidays
+- Payroll
+- Recruitment
+- Onboarding
+- Performance
+- Projects
+- Expenses
+- Assets
+- Training
+- Helpdesk
+- Engagement
+- Documents
+- Exit Management
+- Reports
+- Settings
+
+Only show modules enabled in the tenant's plan and permitted to the user.
+
+TOP NAVBAR:
+
+- Company logo
+- Global search
+- Branch selector where applicable
+- Notifications
+- Help
+- User profile
+- Logout
+
+UI COMPONENTS:
+
+- KPI cards
+- Interactive charts
+- Searchable tables
+- Filter panels
+- Date pickers
+- Calendars
+- Tabs
+- Drawers
+- Confirmation dialogs
+- Approval dialogs
+- File upload components
+- Form validation
+- Pagination
+- Export buttons
+- Status indicators
+- Loading skeletons
+- Empty states
+- Error messages
+
+Design for desktop, tablet, and mobile.
+
+Maintain consistent visual language throughout.
+
+==================================================
+36. SAAS BILLING AND MONETIZATION
+==================================================
+
+Build configurable subscription billing.
+
+PLANS:
+
+Starter
+Growth
+Business
+Enterprise
+
+Support:
+
+- Monthly billing
+- Annual billing
+- Per-employee pricing
+- Base subscription fees
+- Custom enterprise pricing
+- Trial subscriptions
+- Feature-based entitlements
+- Module add-ons
+- Storage limits
+- Employee count limits
+- Subscription renewals
+- Payment failures
+- Upgrade/downgrade
+- Cancellation
+- Billing invoices
+
+Do not hardcode plan prices in the frontend.
+
+Super Admin must be able to update plans and prices.
+
+Implement gateway webhook signature verification and idempotent event handling.
+
+Define policies for expired subscriptions, data retention, exports, and account cancellation.
+
+Never silently delete client data when a subscription expires.
+
+==================================================
+37. WHITE-LABEL FUNCTIONALITY
+==================================================
+
+Allow eligible companies to customize:
+
+- Company logo
+- Company name
+- Brand colors
+- Email templates
+- Login page branding
+- Dashboard branding
+- Document templates
+- Payslip branding
+- Custom subdomain
+
+Prepare the architecture for custom domains.
+
+Ensure branding cannot compromise accessibility or security.
+
+==================================================
+38. INTEGRATIONS
+==================================================
+
+Create an extensible integration framework.
+
+POTENTIAL INTEGRATIONS:
+
+- Google Workspace
+- Microsoft 365
+- Email providers
+- SMS providers
+- Biometric attendance devices
+- Accounting systems
+- Payment gateways
+- Calendar services
+- Digital signature services
+- Job boards
+- HR communication tools
+- Banking export formats
+
+Provide:
+
+- API credentials management
+- Integration status
+- Webhook configuration
+- Retry handling
+- Integration logs
+- Connection testing
+- Error monitoring
+
+Do not falsely display an integration as connected.
+
+Use mock integration adapters only in explicitly marked development environments.
+
+==================================================
+39. SECURITY AND PRIVACY
+==================================================
+
+Implement enterprise security standards.
+
+REQUIREMENTS:
+
+- HTTPS
+- Strong authentication
+- MFA support
+- Least-privilege authorization
+- Tenant isolation
+- Secure password hashing
+- Secure session management
+- CSRF protection where applicable
+- XSS protection
+- SQL injection protection
+- Rate limiting
+- Safe file uploads
+- Malware scanning for uploaded files
+- Encryption in transit
+- Encryption at rest
+- Secrets management
+- Data access auditing
+- Secure password reset
+- Account lockout policies
+- Session revocation
+- Backup encryption
+- Backup restoration testing
+- Data retention configuration
+
+PRIVACY:
+
+- Data minimization
+- Purpose limitation
+- Consent where required
+- Privacy notices
+- Employee data export where applicable
+- Data correction workflows
+- Lawful deletion and retention rules
+- Access request handling
+- Regional privacy configuration
+
+Design for applicable Indian data protection requirements and other relevant regional regulations, subject to legal verification.
+
+Do not claim legal compliance merely because a feature is implemented.
+
+==================================================
+40. AUTOMATION ENGINE
+==================================================
+
+Create scheduled background jobs for:
+
+- Attendance reconciliation
+- Leave accrual
+- Leave expiration
+- Probation reminders
+- Birthday reminders
+- Work anniversary reminders
+- Document expiry reminders
+- Payroll reminders
+- Subscription renewals
+- Invoice generation
+- Notification delivery
+- Backup verification
+
+Jobs must be tenant-aware and idempotent.
+
+Avoid duplicate processing.
+
+Provide monitoring and retry mechanisms.
+
+==================================================
+41. TESTING AND QUALITY ASSURANCE
+==================================================
+
+Implement:
+
+- Unit tests
+- Integration tests
+- API tests
+- End-to-end tests
+- Mobile workflow tests
+- Database migration tests
+- Multi-tenant isolation tests
+- Permission tests
+- Payroll calculation tests
+- Attendance calculation tests
+- Timezone tests
+- Subscription billing tests
+- Security tests
+- Accessibility tests
+- Performance tests
+
+CRITICAL TEST SCENARIOS:
+
+1. Company A cannot access Company B records.
+2. Employee cannot view another employee's salary.
+3. Manager cannot approve unauthorized requests.
+4. Leave balances cannot become inconsistent.
+5. Payroll cannot be published without authorization.
+6. Duplicate payment webhooks do not create duplicate invoices.
+7. Employees cannot check out before check-in without an explicit valid correction process.
+8. Overnight shifts calculate correctly.
+9. Subscription limits are enforced.
+10. Deleted or inactive users cannot continue using expired sessions.
+11. Export permissions are enforced.
+12. Failed background jobs can be safely retried.
+
+==================================================
+42. DEPLOYMENT AND DEVOPS
+==================================================
+
+Provide:
+
+- Development environment
+- Staging environment
+- Production environment
+- Docker configuration
+- Environment variables
+- Database migrations
+- Secure secrets management
+- CI/CD pipelines
+- Automated tests
+- Logging
+- Error monitoring
+- Performance monitoring
+- Database backups
+- Backup restoration procedure
+- Deployment documentation
+- Rollback procedure
+- Disaster recovery plan
+
+Support custom domains and HTTPS.
+
+Do not place production secrets in frontend code.
+
+==================================================
+43. DEVELOPMENT PHASES
+==================================================
+
+PHASE 1: PRODUCT FOUNDATION
+
+Build:
+
+- Monorepo
+- Backend foundation
+- Database
+- Authentication
+- Tenant architecture
+- RBAC
+- Company registration
+- Subscription entitlements
+- Core layouts
+
+PHASE 2: EMPLOYEE AND ORGANIZATION
+
+Build:
+
+- Company dashboard
+- Employee management
+- Departments
+- Branches
+- Designations
+- Employee documents
+- Employee imports
+
+PHASE 3: ATTENDANCE AND LEAVE
+
+Build:
+
+- Attendance
+- Shifts
+- Holidays
+- Leave policies
+- Leave requests
+- Approval engine
+
+PHASE 4: PAYROLL
+
+Build:
+
+- Salary structures
+- Payroll calculations
+- Payroll review
+- Payslips
+- Reports
+- Controlled statutory rule configuration
+
+PHASE 5: EMPLOYEE AND MANAGER PORTALS
+
+Build:
+
+- Employee self-service
+- Manager dashboard
+- Approval workflows
+- Notifications
+
+PHASE 6: ADVANCED HR MODULES
+
+Build:
+
+- Recruitment
+- Onboarding
+- Performance
+- Projects
+- Timesheets
+- Expenses
+- Assets
+- Training
+- Helpdesk
+- Engagement
+- Offboarding
+
+PHASE 7: COMMERCIAL SAAS
+
+Build:
+
+- Super Admin
+- Subscription billing
+- Pricing configuration
+- Feature entitlements
+- Client onboarding
+- Trial management
+- White-label options
+
+PHASE 8: MOBILE APPLICATION
+
+Build:
+
+- React Native employee app
+- Attendance
+- Leave
+- Payslips
+- Approvals
+- Notifications
+- Profile
+
+PHASE 9: INTEGRATIONS
+
+Build:
+
+- Integration framework
+- Payment gateways
+- Email and SMS
+- Biometric adapter
+- Third-party connectivity
+
+PHASE 10: PRODUCTION HARDENING
+
+Complete:
+
+- Security review
+- Tenant isolation audit
+- Automated tests
+- Performance optimization
+- Backup and recovery validation
+- Monitoring
+- Deployment
+- Documentation
+- Pilot customer onboarding
+
+==================================================
+44. DELIVERABLES
+==================================================
+
+Provide all of the following:
+
+1. Complete system architecture
+2. Detailed module breakdown
+3. Sitemap and route inventory
+4. User roles and permissions matrix
+5. Database ER diagram
+6. PostgreSQL database migrations
+7. Backend source code
+8. Frontend source code
+9. Mobile application source code
+10. SaaS Super Admin source code
+11. Employee portal
+12. Manager portal
+13. Company Admin portal
+14. API documentation
+15. Design system
+16. Reusable components
+17. Authentication and authorization
+18. Working CRUD operations
+19. Payroll calculation engine
+20. Notification engine
+21. Subscription billing system
+22. Integration adapters
+23. Automated test suite
+24. Deployment configuration
+25. Environment variable template
+26. Installation documentation
+27. User documentation
+28. Administrator documentation
+29. Test accounts and development seed data
+30. Production readiness checklist
+
+==================================================
+45. STRICT DEVELOPMENT RULES
+==================================================
+
+IMPORTANT:
+
+- Do not build only a frontend demo.
+- Do not use fake metrics in production.
+- Do not leave buttons without functionality.
+- Do not use placeholder API responses for completed modules.
+- Do not leave forms disconnected from the database.
+- Do not assume frontend permission checks provide security.
+- Do not hardcode one company's information.
+- Do not expose tenant-sensitive information.
+- Do not use invalid payroll calculations.
+- Do not claim an integration works unless tested.
+- Do not mark modules complete without tests.
+- Do not invent legal compliance certifications.
+- Do not silently ignore backend errors.
+- Do not hide incomplete functionality.
+
+Use realistic data only in isolated development seed environments.
+
+Ensure the system can support multiple client companies securely.
+
+Maintain code quality, modularity, accessibility, and responsive design.
+
+Build in phases.
+
+At the end of every phase:
+
+1. Show implemented modules.
+2. Show created database tables and migrations.
+3. Show implemented API endpoints.
+4. Show frontend routes.
+5. Demonstrate working CRUD operations.
+6. Execute relevant automated tests.
+7. Identify incomplete features.
+8. Document remaining work.
+9. Provide commands to run locally.
+10. Confirm the application builds successfully.
+
+==================================================
+46. INITIAL EXECUTION INSTRUCTIONS
+==================================================
+
+Start by producing:
+
+A. Complete system architecture
+B. Frontend and backend folder structure
+C. Database entity relationship diagram
+D. Full sitemap
+E. Role-permission matrix
+F. Core module dependency map
+G. SaaS tenant isolation approach
+H. Subscription architecture
+I. Development milestone plan
+J. Initial UI design system
+
+Then begin implementing PHASE 1.
+
+Create actual project files.
+
+Implement the database and authentication.
+
+Implement company registration and tenant provisioning.
+
+Implement the main SaaS administration layout.
+
+Connect the frontend to working backend APIs.
+
+Run tests and correct errors.
+
+Continue through the development phases in dependency order.
+
+The final goal is a secure, commercially deployable HRMS SaaS application that can be subscribed to and used by independent businesses.
+
+END OF MASTER PROMPT.

@@ -1,0 +1,6 @@
+{
+  "name": "ZenithHRMS - Enterprise Multi-Tenant SaaS Platform",
+  "description": "Comprehensive, multi-tenant Enterprise Human Resource Management System (HRMS) covering recruitment, onboarding, attendance, shifts, leave, payroll, performance, expenses, assets, offboarding, and SaaS subscription billing.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
